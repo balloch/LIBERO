@@ -4,7 +4,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 
-from robomimic.models.base_nets import CropRandomizer
+try: #robomimic 0.3
+    from robomimic.models.obs_core import CropRandomizer
+except: #robomimic 0.2
+    from robomimic.models.base_nets import CropRandomizer
 
 
 class IdentityAug(nn.Module):
@@ -89,7 +92,7 @@ class ImgColorJitterAug(torch.nn.Module):
         return input_shape
 
 
-class ImgColorJitterGroupAug(torch.nn.Module):
+class ImgColorJitterGroupAug(nn.Module):
     """
     Conduct color jittering augmentation outside of proposal boxes
     """
@@ -121,7 +124,7 @@ class ImgColorJitterGroupAug(torch.nn.Module):
         return input_shape
 
 
-class BatchWiseImgColorJitterAug(torch.nn.Module):
+class BatchWiseImgColorJitterAug(nn.Module):
     """
     Color jittering augmentation to individual batch.
     This is to create variation in training data to combat
@@ -147,7 +150,7 @@ class BatchWiseImgColorJitterAug(torch.nn.Module):
         out = []
         for x_i in torch.split(x, 1):
             if self.training and np.random.rand() > self.epsilon:
-                out.append(self.color_jitter(x_i))
+                out.append(self.color_jitter(x_i))  # Channel order Bug here for versions of robomimic>0.2
             else:
                 out.append(x_i)
         return torch.cat(out, dim=0)

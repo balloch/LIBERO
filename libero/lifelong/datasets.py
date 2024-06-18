@@ -40,10 +40,16 @@ def get_dataset(
 
     seq_len = seq_len
     filter_key = filter_key
+    if 'dataset_keys' in kwargs:
+        dataset_keys = kwargs['dataset_keys']
+    else:
+        dataset_keys = ["actions"]
+
+    # ref:https://github.com/ARISE-Initiative/robomimic/blob/master/examples/simple_train_loop.py
     dataset = SequenceDataset(
         hdf5_path=dataset_path,
         obs_keys=shape_meta["all_obs_keys"],
-        dataset_keys=["actions"],
+        dataset_keys=dataset_keys,
         load_next_obs=False,
         frame_stack=frame_stack,
         seq_length=seq_len,  # length-10 temporal sequences
