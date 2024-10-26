@@ -59,6 +59,7 @@ libero_suites = [
     "libero_goal",
     "libero_90",
     "libero_10",
+    "rand_libero_90"
 ]
 task_maps = {}
 max_len = 0
@@ -114,7 +115,7 @@ class Benchmark(abc.ABC):
 
     def _make_benchmark(self):
         tasks = list(task_maps[self.name].values())
-        if self.name == "libero_90":
+        if self.name in ("libero_90", "rand_libero_90"):
             self.tasks = tasks
         else:
             print(f"[info] using task orders {task_orders[self.task_order_index]}")
@@ -216,4 +217,11 @@ class LIBERO_100(Benchmark):
     def __init__(self, task_order_index=0):
         super().__init__(task_order_index=task_order_index)
         self.name = "libero_100"
+        self._make_benchmark()
+
+@register_benchmark
+class RAND_LIBERO_90(Benchmark):
+    def __init__(self, task_order_index=0):
+        super().__init__(task_order_index=task_order_index)
+        self.name = "rand_libero_90"
         self._make_benchmark()
